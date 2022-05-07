@@ -18,11 +18,36 @@ void OpenXRSkeleton::_register_methods() {
 	register_method("get_motion_range", &OpenXRSkeleton::get_motion_range);
 	register_method("set_motion_range", &OpenXRSkeleton::set_motion_range);
 	register_property<OpenXRSkeleton, int>("motion_range", &OpenXRSkeleton::set_motion_range, &OpenXRSkeleton::get_motion_range, 0, GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_ENUM, "Unobstructed,Conform to controller");
+
+	register_method("get_movement_thumb", &OpenXRSkeleton::get_movement_thumb);
+	register_method("set_movement_thumb", &OpenXRSkeleton::set_movement_thumb);
+	register_property<OpenXRSkeleton, int>("movement_thumb", &OpenXRSkeleton::set_movement_thumb, &OpenXRSkeleton::get_movement_thumb, 0, GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_ENUM, "Free,Static,Extend,Contract");
+
+	register_method("get_movement_index", &OpenXRSkeleton::get_movement_index);
+	register_method("set_movement_index", &OpenXRSkeleton::set_movement_index);
+	register_property<OpenXRSkeleton, int>("movement_index", &OpenXRSkeleton::set_movement_index, &OpenXRSkeleton::get_movement_index, 0, GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_ENUM, "Free,Static,Extend,Contract");
+
+	register_method("get_movement_middle", &OpenXRSkeleton::get_movement_middle);
+	register_method("set_movement_middle", &OpenXRSkeleton::set_movement_middle);
+	register_property<OpenXRSkeleton, int>("movement_middle", &OpenXRSkeleton::set_movement_middle, &OpenXRSkeleton::get_movement_middle, 0, GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_ENUM, "Free,Static,Extend,Contract");
+
+	register_method("get_movement_ring", &OpenXRSkeleton::get_movement_ring);
+	register_method("set_movement_ring", &OpenXRSkeleton::set_movement_ring);
+	register_property<OpenXRSkeleton, int>("movement_ring", &OpenXRSkeleton::set_movement_ring, &OpenXRSkeleton::get_movement_ring, 0, GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_ENUM, "Free,Static,Extend,Contract");
+
+	register_method("get_movement_little", &OpenXRSkeleton::get_movement_little);
+	register_method("set_movement_little", &OpenXRSkeleton::set_movement_little);
+	register_property<OpenXRSkeleton, int>("movement_little", &OpenXRSkeleton::set_movement_little, &OpenXRSkeleton::get_movement_little, 0, GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_ENUM, "Free,Static,Extend,Contract");
 }
 
 OpenXRSkeleton::OpenXRSkeleton() {
 	hand = 0;
 	motion_range = 0;
+	movement_thumb = 0;
+	movement_index = 0;
+	movement_middle = 0;
+	movement_ring = 0;
+	movement_little = 0;
 	openxr_api = OpenXRApi::openxr_get_api();
 	hand_tracking_wrapper = XRExtHandTrackingExtensionWrapper::get_singleton();
 
@@ -187,4 +212,44 @@ void OpenXRSkeleton::_set_motion_range() {
 	}
 
 	hand_tracking_wrapper->set_motion_range(hand, xr_motion_range);
+}
+
+int OpenXRSkeleton::get_movement_thumb() const {
+	return movement_thumb;
+}
+
+void OpenXRSkeleton::set_movement_thumb(int p_movement_thumb) {
+	movement_thumb = p_movement_thumb;
+}
+
+int OpenXRSkeleton::get_movement_index() const {
+	return movement_index;
+}
+
+void OpenXRSkeleton::set_movement_index(int p_movement_index) {
+	movement_index = p_movement_index;
+}
+
+int OpenXRSkeleton::get_movement_middle() const {
+	return movement_middle;
+}
+
+void OpenXRSkeleton::set_movement_middle(int p_movement_middle) {
+	movement_middle = p_movement_middle;
+}
+
+int OpenXRSkeleton::get_movement_ring() const {
+	return movement_ring;
+}
+
+void OpenXRSkeleton::set_movement_ring(int p_movement_ring) {
+	movement_ring = p_movement_ring;
+}
+
+int OpenXRSkeleton::get_movement_little() const {
+	return movement_little;
+}
+
+void OpenXRSkeleton::set_movement_little(int p_movement_little) {
+	movement_little = p_movement_little;
 }
