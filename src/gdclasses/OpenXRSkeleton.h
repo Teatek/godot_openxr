@@ -6,8 +6,12 @@
 
 #include "openxr/OpenXRApi.h"
 #include "openxr/extensions/xr_ext_hand_tracking_extension_wrapper.h"
+#include "OpenXRHandPose.h"
 #include <Ref.hpp>
 #include <Skeleton.hpp>
+#include <iostream>
+#include <string>
+#include <Dictionary.hpp>
 
 namespace godot {
 class OpenXRSkeleton : public Skeleton {
@@ -23,6 +27,7 @@ private:
 	int movement_middle;
 	int movement_ring;
 	int movement_little;
+	Dictionary hand_pose;
 
 	int64_t bones[XR_HAND_JOINT_COUNT_EXT];
 	void _set_motion_range();
@@ -57,6 +62,9 @@ public:
 
 	int get_movement_little() const;
 	void set_movement_little(int p_movement_little);
+
+	Dictionary get_hand_pose();
+	void set_hand_pose(Dictionary p_hand_pose);
 };
 } // namespace godot
 

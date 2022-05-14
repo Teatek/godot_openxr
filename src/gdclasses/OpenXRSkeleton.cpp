@@ -38,6 +38,10 @@ void OpenXRSkeleton::_register_methods() {
 	register_method("get_movement_little", &OpenXRSkeleton::get_movement_little);
 	register_method("set_movement_little", &OpenXRSkeleton::set_movement_little);
 	register_property<OpenXRSkeleton, int>("movement_little", &OpenXRSkeleton::set_movement_little, &OpenXRSkeleton::get_movement_little, 0, GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_ENUM, "Free,Static,Extend,Contract");
+
+	register_method("get_hand_pose", &OpenXRSkeleton::get_hand_pose);
+	register_method("set_hand_pose", &OpenXRSkeleton::set_hand_pose);
+	register_property<OpenXRSkeleton, Dictionary>("hand_pose", &OpenXRSkeleton::set_hand_pose, &OpenXRSkeleton::get_hand_pose, OpenXRHandPose::get_default_pose(),GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_NONE);
 }
 
 OpenXRSkeleton::OpenXRSkeleton() {
@@ -54,6 +58,7 @@ OpenXRSkeleton::OpenXRSkeleton() {
 	for (int i = 0; i < XR_HAND_JOINT_COUNT_EXT; i++) {
 		bones[i] = -1;
 	}
+	hand_pose = OpenXRHandPose::get_default_pose();
 }
 
 OpenXRSkeleton::~OpenXRSkeleton() {
@@ -252,4 +257,12 @@ int OpenXRSkeleton::get_movement_little() const {
 
 void OpenXRSkeleton::set_movement_little(int p_movement_little) {
 	movement_little = p_movement_little;
+}
+
+Dictionary OpenXRSkeleton::get_hand_pose() {
+	return hand_pose;
+}
+
+void OpenXRSkeleton::set_hand_pose(Dictionary p_hand_pose) {
+	hand_pose = p_hand_pose;
 }
