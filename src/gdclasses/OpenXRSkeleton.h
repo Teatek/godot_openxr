@@ -28,9 +28,16 @@ private:
 	int movement_ring;
 	int movement_little;
 	Dictionary hand_pose;
+	enum MovementType {
+		FREE,
+		STATIC,
+		EXTEND,
+		CONTRACT
+	};
 
 	int64_t bones[XR_HAND_JOINT_COUNT_EXT];
 	void _set_motion_range();
+	void finger_movements(int b, int f, Transform t);
 
 public:
 	static void _register_methods();

@@ -168,8 +168,30 @@ void OpenXRSkeleton::_physics_process(float delta) {
 				Transform rest = get_bone_rest(bones[i]);
 				t = rest.inverse() * t;
 
-				// and set our pose
-				set_bone_pose(bones[i], t);
+				String bone_name = get_bone_name(bone);
+
+				int pos = bone_name.find("_");
+				std::string finger = std::string(bone_name.substr(0, pos).utf8().get_data());
+				if (finger == "Thumb")
+				{
+					finger_movements(bones[i], movement_thumb, t);
+				} else {
+					if (finger == "Index")
+					{
+						finger_movements(bones[i], movement_index, t);
+					} else {
+						if (finger == "Middle")
+						{
+							finger_movements(bones[i], movement_middle, t);
+						} else {
+							if (finger == "Ring") {
+								finger_movements(bones[i], movement_ring, t);
+							} else {
+								finger_movements(bones[i], movement_little, t);
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -178,6 +200,31 @@ void OpenXRSkeleton::_physics_process(float delta) {
 	} else {
 		// hide it
 		set_visible(false);
+	}
+}
+
+void OpenXRSkeleton::finger_movements(int b, int f, Transform t) {
+	Transform actual_pose = get_bone_pose(b);
+	switch (f) {
+		case MovementType::FREE:
+			set_bone_pose(b, t);
+			break;
+		case MovementType::EXTEND:
+			// min (need a reference pose)
+			if (t.basis.get_euler().y <= actual_pose.basis.get_euler().y)
+			{
+				set_bone_pose(b, t);
+			}
+			break;
+		case MovementType::CONTRACT:
+			// max (need a reference pose)
+			if (t.basis.get_euler().y >= actual_pose.basis.get_euler().y)
+			{
+				set_bone_pose(b, t);
+			}
+			break;
+		default:
+			break;
 	}
 }
 
