@@ -41,7 +41,7 @@ void OpenXRSkeleton::_register_methods() {
 
 	register_method("get_hand_pose", &OpenXRSkeleton::get_hand_pose);
 	register_method("set_hand_pose", &OpenXRSkeleton::set_hand_pose);
-	register_property<OpenXRSkeleton, Dictionary>("hand_pose", &OpenXRSkeleton::set_hand_pose, &OpenXRSkeleton::get_hand_pose, OpenXRHandPose::get_default_pose(),GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_NONE);
+	register_property<OpenXRSkeleton, Array>("hand_pose", &OpenXRSkeleton::set_hand_pose, &OpenXRSkeleton::get_hand_pose, OpenXRHandPose::get_default_pose(),GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_NONE);
 }
 
 OpenXRSkeleton::OpenXRSkeleton() {
@@ -167,30 +167,59 @@ void OpenXRSkeleton::_physics_process(float delta) {
 				// get difference with rest
 				Transform rest = get_bone_rest(bones[i]);
 				t = rest.inverse() * t;
+				int finger_numb = 0;
 
-				String bone_name = get_bone_name(bone);
-
-				int pos = bone_name.find("_");
-				std::string finger = std::string(bone_name.substr(0, pos).utf8().get_data());
-				if (finger == "Thumb")
+				if (i > 1 && i < 6)
 				{
-					finger_movements(bones[i], movement_thumb, t);
-				} else {
-					if (finger == "Index")
-					{
-						finger_movements(bones[i], movement_index, t);
-					} else {
-						if (finger == "Middle")
+					finger_numb = movement_thumb;
+				} else if (i > 5 && i < 11)
+				{
+					finger_numb = movement_index;
+				} else if (i > 10 && i < 16)
+				{
+					finger_numb = movement_middle;
+				} else if (i > 15 && i < 21)
+				{
+					finger_numb = movement_ring;
+				} else if (i > 20)
+				{
+					finger_numb = movement_little;
+				}
+				int bones_size = (Array(Array((Array)hand_pose[hand])[1])).size();
+				Transform hp = Transform();
+				if (bones_size == 26)
+				{
+					hp.origin = (PoolVector3Array(Array((Array)hand_pose[hand])[0])[i]);
+					hp.basis = Basis((Quat)(Array(Array((Array)hand_pose[hand])[1])[i]));
+				}
+				switch (finger_numb) {
+					case MovementType::FREE:
+						set_bone_pose(bones[i], t);
+						break;
+					case MovementType::EXTEND:
+						// min (need a reference pose)
+						if (t.basis.get_euler().x <= hp.basis.get_euler().x)
 						{
-							finger_movements(bones[i], movement_middle, t);
+							set_bone_pose(bones[i], hp);
 						} else {
-							if (finger == "Ring") {
-								finger_movements(bones[i], movement_ring, t);
-							} else {
-								finger_movements(bones[i], movement_little, t);
-							}
+							// set x and y
+							set_bone_pose(bones[i], t);
 						}
-					}
+						break;
+					case MovementType::CONTRACT:
+						// max (need a reference pose)
+						if (t.basis.get_euler().x >= hp.basis.get_euler().x)
+						{
+							set_bone_pose(bones[i], hp);
+						} else {
+							// set x and y
+							set_bone_pose(bones[i], t);
+						}
+						break;
+					default:
+						/* static */
+						set_bone_pose(bones[i], hp);
+						break;
 				}
 			}
 		}
@@ -200,31 +229,6 @@ void OpenXRSkeleton::_physics_process(float delta) {
 	} else {
 		// hide it
 		set_visible(false);
-	}
-}
-
-void OpenXRSkeleton::finger_movements(int b, int f, Transform t) {
-	Transform actual_pose = get_bone_pose(b);
-	switch (f) {
-		case MovementType::FREE:
-			set_bone_pose(b, t);
-			break;
-		case MovementType::EXTEND:
-			// min (need a reference pose)
-			if (t.basis.get_euler().y <= actual_pose.basis.get_euler().y)
-			{
-				set_bone_pose(b, t);
-			}
-			break;
-		case MovementType::CONTRACT:
-			// max (need a reference pose)
-			if (t.basis.get_euler().y >= actual_pose.basis.get_euler().y)
-			{
-				set_bone_pose(b, t);
-			}
-			break;
-		default:
-			break;
 	}
 }
 
@@ -306,10 +310,10 @@ void OpenXRSkeleton::set_movement_little(int p_movement_little) {
 	movement_little = p_movement_little;
 }
 
-Dictionary OpenXRSkeleton::get_hand_pose() {
+Array OpenXRSkeleton::get_hand_pose() {
 	return hand_pose;
 }
 
-void OpenXRSkeleton::set_hand_pose(Dictionary p_hand_pose) {
+void OpenXRSkeleton::set_hand_pose(Array p_hand_pose) {
 	hand_pose = p_hand_pose;
 }

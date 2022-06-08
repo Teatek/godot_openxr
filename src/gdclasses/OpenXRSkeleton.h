@@ -12,6 +12,10 @@
 #include <iostream>
 #include <string>
 #include <Dictionary.hpp>
+#include <PoolArrays.hpp>
+#include <Array.hpp>
+#include <Basis.hpp>
+#include <Quat.hpp>
 
 namespace godot {
 class OpenXRSkeleton : public Skeleton {
@@ -27,7 +31,7 @@ private:
 	int movement_middle;
 	int movement_ring;
 	int movement_little;
-	Dictionary hand_pose;
+	Array hand_pose;
 	enum MovementType {
 		FREE,
 		STATIC,
@@ -37,7 +41,6 @@ private:
 
 	int64_t bones[XR_HAND_JOINT_COUNT_EXT];
 	void _set_motion_range();
-	void finger_movements(int b, int f, Transform t);
 
 public:
 	static void _register_methods();
@@ -70,8 +73,8 @@ public:
 	int get_movement_little() const;
 	void set_movement_little(int p_movement_little);
 
-	Dictionary get_hand_pose();
-	void set_hand_pose(Dictionary p_hand_pose);
+	Array get_hand_pose();
+	void set_hand_pose(Array p_hand_pose);
 };
 } // namespace godot
 
