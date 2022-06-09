@@ -192,28 +192,32 @@ void OpenXRSkeleton::_physics_process(float delta) {
 					hp.origin = (PoolVector3Array(Array((Array)hand_pose[hand])[0])[i]);
 					hp.basis = Basis((Quat)(Array(Array((Array)hand_pose[hand])[1])[i]));
 				}
+				Vector3 new_pose_vect = hp.basis.get_euler();
+				Quat q = Quat();
+				q.set_euler(Vector3(t.basis.get_euler().x, new_pose_vect.y, new_pose_vect.z));
+
 				switch (finger_numb) {
 					case MovementType::FREE:
 						set_bone_pose(bones[i], t);
 						break;
 					case MovementType::EXTEND:
 						// min (need a reference pose)
-						if (t.basis.get_euler().x <= hp.basis.get_euler().x)
+						if (t.basis.get_euler().x <= new_pose_vect.x)
 						{
 							set_bone_pose(bones[i], hp);
 						} else {
-							// set x and y
-							set_bone_pose(bones[i], t);
+							hp.basis = Basis(q);
+							set_bone_pose(bones[i], hp);
 						}
 						break;
 					case MovementType::CONTRACT:
 						// max (need a reference pose)
-						if (t.basis.get_euler().x >= hp.basis.get_euler().x)
+						if (t.basis.get_euler().x >= new_pose_vect.x)
 						{
 							set_bone_pose(bones[i], hp);
 						} else {
-							// set x and y
-							set_bone_pose(bones[i], t);
+							hp.basis = Basis(q);
+							set_bone_pose(bones[i], hp);
 						}
 						break;
 					default:
