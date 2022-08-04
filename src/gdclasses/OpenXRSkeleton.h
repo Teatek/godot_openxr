@@ -52,6 +52,8 @@ public:
 	OpenXRSkeleton();
 	~OpenXRSkeleton();
 
+    static Array get_default_pose();
+	
 	int get_hand() const;
 	void set_hand(int p_hand);
 

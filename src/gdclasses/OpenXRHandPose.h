@@ -14,6 +14,7 @@ class OpenXRHandPose : public Resource {
     GODOT_CLASS(OpenXRHandPose, Resource)
 
 private:
+    bool is_used;
     int left_movement_thumb;
     int left_movement_index;
     int left_movement_middle;
@@ -37,6 +38,9 @@ public:
     
     Array get_hands() const;
     void set_hands(Array p_hands);
+
+    bool get_is_used() const;
+    void set_is_used(bool p_is_used);
     
     int get_left_movement_thumb() const;
     void set_left_movement_thumb(int p_left_movement_thumb);

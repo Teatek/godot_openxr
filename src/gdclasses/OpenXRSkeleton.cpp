@@ -41,7 +41,7 @@ void OpenXRSkeleton::_register_methods() {
 
 	register_method("get_hand_pose", &OpenXRSkeleton::get_hand_pose);
 	register_method("set_hand_pose", &OpenXRSkeleton::set_hand_pose);
-	register_property<OpenXRSkeleton, Array>("hand_pose", &OpenXRSkeleton::set_hand_pose, &OpenXRSkeleton::get_hand_pose, OpenXRHandPose::get_default_pose(),GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_NONE);
+	register_property<OpenXRSkeleton, Array>("hand_pose", &OpenXRSkeleton::set_hand_pose, &OpenXRSkeleton::get_hand_pose, OpenXRSkeleton::get_default_pose(), GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_NONE);
 }
 
 OpenXRSkeleton::OpenXRSkeleton() {
@@ -58,7 +58,7 @@ OpenXRSkeleton::OpenXRSkeleton() {
 	for (int i = 0; i < XR_HAND_JOINT_COUNT_EXT; i++) {
 		bones[i] = -1;
 	}
-	hand_pose = OpenXRHandPose::get_default_pose();
+	hand_pose = get_default_pose();
 }
 
 OpenXRSkeleton::~OpenXRSkeleton() {
@@ -71,6 +71,10 @@ OpenXRSkeleton::~OpenXRSkeleton() {
 
 void OpenXRSkeleton::_init() {
 	// nothing to do here
+}
+
+Array OpenXRSkeleton::get_default_pose() {
+	return Array();
 }
 
 void OpenXRSkeleton::_ready() {

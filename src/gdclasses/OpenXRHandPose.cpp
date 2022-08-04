@@ -4,6 +4,11 @@
 using namespace godot;
 
 void OpenXRHandPose::_register_methods() {
+
+	register_method("get_is_used", &OpenXRHandPose::get_is_used);
+	register_method("set_is_used", &OpenXRHandPose::set_is_used);
+	register_property<OpenXRHandPose, bool>("is_used", &OpenXRHandPose::set_is_used, &OpenXRHandPose::get_is_used, false, GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_NONE);
+
 	register_method("get_left_movement_thumb", &OpenXRHandPose::get_left_movement_thumb);
 	register_method("set_left_movement_thumb", &OpenXRHandPose::set_left_movement_thumb);
 	register_property<OpenXRHandPose, int>("left_movement_thumb", &OpenXRHandPose::set_left_movement_thumb, &OpenXRHandPose::get_left_movement_thumb, 1, GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_ENUM, "Free,Static,Extend,Contract");
@@ -51,6 +56,7 @@ void OpenXRHandPose::_register_methods() {
 }
 
 OpenXRHandPose::OpenXRHandPose() {
+	is_used = false;
 	left_movement_thumb = 1;
 	left_movement_index = 1;
 	left_movement_middle = 1;
@@ -82,6 +88,13 @@ Array OpenXRHandPose::get_default_pose() {
 	result.append(ltab);
 	result.append(rtab);
 	return result;
+}
+
+void OpenXRHandPose::set_is_used(bool p_is_used) {
+	is_used = p_is_used;
+}
+bool OpenXRHandPose::get_is_used() const {
+	return is_used;
 }
 
 int OpenXRHandPose::get_left_movement_thumb() const {
