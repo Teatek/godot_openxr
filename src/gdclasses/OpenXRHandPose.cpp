@@ -75,19 +75,7 @@ OpenXRHandPose::~OpenXRHandPose() {
 }
 
 Array OpenXRHandPose::get_default_pose() {
-	Array result = Array();
-	Array ltab = Array();
-	Array rtab = Array();
-
-	ltab.append(PoolVector3Array());
-	ltab.append(Array());
-
-	rtab.append(PoolVector3Array());
-	rtab.append(Array());
-
-	result.append(ltab);
-	result.append(rtab);
-	return result;
+	return Array();
 }
 
 void OpenXRHandPose::set_is_used(bool p_is_used) {

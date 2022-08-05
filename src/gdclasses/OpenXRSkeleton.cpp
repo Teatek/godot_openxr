@@ -189,12 +189,18 @@ void OpenXRSkeleton::_physics_process(float delta) {
 				{
 					finger_numb = movement_little;
 				}
-				int bones_size = (Array(Array((Array)hand_pose[hand])[1])).size();
+
+				int bones_size = 0;
+				if (hand_pose.size() > 0)
+				{
+					bones_size = Array(hand_pose[0]).size();
+				}
 				Transform hp = Transform();
 				if (bones_size == 26)
 				{
-					hp.origin = (PoolVector3Array(Array((Array)hand_pose[hand])[0])[i]);
-					hp.basis = Basis((Quat)(Array(Array((Array)hand_pose[hand])[1])[i]));
+					// I should probably just use a transform (simpler and maybe more efficient)
+					hp.origin = PoolVector3Array(Array(hand_pose[0]))[i];
+					hp.basis = Basis(Quat(Array(hand_pose[1])[i]));
 				}
 				Vector3 new_pose_vect = hp.basis.get_euler();
 				Quat q = Quat();
